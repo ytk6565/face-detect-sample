@@ -1,0 +1,57 @@
+{
+  "name": "face-api-sample",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": "14.x",
+    "npm": "7.x"
+  },
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
+    "lint:style": "stylelint \"**/*.{vue,css}\" --ignore-path .gitignore",
+    "prepare": "husky install",
+    "lint": "yarn lint:js && yarn lint:style",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@nuxtjs/composition-api": "^0.27.0",
+    "core-js": "^3.17.2",
+    "face-api.js": "^0.22.2",
+    "kalmanjs": "^1.1.0",
+    "nuxt": "^2.15.8"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.15.4",
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "@nuxt/types": "^2.15.8",
+    "@nuxt/typescript-build": "^2.1.0",
+    "@nuxtjs/eslint-config-typescript": "^6.0.1",
+    "@nuxtjs/eslint-module": "^3.0.2",
+    "@nuxtjs/stylelint-module": "^4.0.0",
+    "@types/lodash": "^4.14.172",
+    "@vue/test-utils": "^1.2.2",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^27.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-nuxt": "^2.0.0",
+    "eslint-plugin-vue": "^7.17.0",
+    "husky": "^7.0.2",
+    "jest": "^27.1.0",
+    "lint-staged": "^11.1.2",
+    "lodash": "^4.17.21",
+    "prettier": "^2.3.2",
+    "sass": "^1.39.0",
+    "sass-loader": "^10.2.0",
+    "stylelint": "^13.13.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^22.0.0",
+    "ts-jest": "^27.0.5",
+    "vue-jest": "^3.0.7"
+  }
+}
