@@ -1,21 +1,21 @@
-import { mediaStreamErrorType } from './error';
+import { mediaStreamErrorType } from './error'
 
 class DOMException extends Error {
   constructor(name: string, message?: string) {
-    super(message);
-    this.name = name;
+    super(message)
+    this.name = name
   }
 }
 
 beforeAll(() => {
   // @ts-ignore
-  global.DOMException = DOMException;
-});
+  global.DOMException = DOMException
+})
 
 afterAll(() => {
   // @ts-ignore
-  delete global.DOMException;
-});
+  delete global.DOMException
+})
 
 describe.each([
   [new Error(), 'Error'],
@@ -31,7 +31,7 @@ describe.each([
   'type: mediaStreamErrorType',
   (error: Error | DOMException, expected: string) => {
     test(`type: ${expected}`, () => {
-      expect(mediaStreamErrorType(error)).toBe(expected);
-    });
+      expect(mediaStreamErrorType(error)).toBe(expected)
+    })
   }
-);
+)

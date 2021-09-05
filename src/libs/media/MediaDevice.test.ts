@@ -1,16 +1,16 @@
-import { MediaDeviceHelper } from './MediaDevice';
+import { MediaDeviceHelper } from './MediaDevice'
 
 beforeAll(() => {
   // @ts-ignore
-  global.MediaStream = jest.fn();
-});
+  global.MediaStream = jest.fn()
+})
 
 afterAll(() => {
   // @ts-ignore
-  delete global.MediaStream;
+  delete global.MediaStream
   // @ts-ignore
-  delete global.navigator;
-});
+  delete global.navigator
+})
 
 const createMockTrack = (): MediaStreamTrack => ({
   enabled: true,
@@ -33,14 +33,14 @@ const createMockTrack = (): MediaStreamTrack => ({
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
   dispatchEvent: jest.fn(),
-});
+})
 
 const createMockMediaStream = ({
   id,
   track,
 }: {
-  id: string;
-  track: MediaStreamTrack;
+  id: string
+  track: MediaStreamTrack
 }): MediaStream => ({
   id: id,
   active: false,
@@ -56,21 +56,21 @@ const createMockMediaStream = ({
   addEventListener: jest.fn(),
   removeEventListener: jest.fn(),
   dispatchEvent: jest.fn(),
-});
+})
 
 const createMockMediaDeviceInfo = (opt: {
-  id: string;
-  kind: MediaDeviceInfo['kind'];
+  id: string
+  kind: MediaDeviceInfo['kind']
 }): MediaDeviceInfo => ({
   deviceId: opt.id,
   groupId: 'group',
   kind: opt.kind,
   label: 'label',
   toJSON: jest.fn(),
-});
+})
 
 describe('MediaDeviceHelper', () => {
-  const MDHelper = new MediaDeviceHelper();
+  const MDHelper = new MediaDeviceHelper()
 
   const mock = [
     {
@@ -91,100 +91,103 @@ describe('MediaDeviceHelper', () => {
       },
       track: createMockTrack(),
     },
-  ];
+  ]
 
   const streams = mock.map((m) =>
     createMockMediaStream({ id: m.stream.id, track: m.track })
-  );
+  )
 
   test('addStream', () => {
-    expect(MDHelper['streams'].length).toBe(0);
+    expect(MDHelper['streams'].length).toBe(0)
     streams.forEach((stream) => {
-      MDHelper.addStream(stream);
-    });
-    expect(MDHelper['streams'].length).toBe(3);
-  });
+      MDHelper.addStream(stream)
+    })
+    expect(MDHelper['streams'].length).toBe(3)
+  })
 
   test('clearStream', () => {
-    MDHelper.clearStream('aaaaa');
-    expect(MDHelper['streams'].length).toBe(2);
-    expect(streams[0].getTracks).toHaveBeenCalled();
-    expect(mock[0].track.stop).toHaveBeenCalled();
-    MDHelper.clearStream('11111');
-    expect(MDHelper['streams'].length).toBe(2);
-    expect(streams[1].getTracks).not.toHaveBeenCalled();
-    expect(streams[2].getTracks).not.toHaveBeenCalled();
-    expect(mock[1].track.stop).not.toHaveBeenCalled();
-    expect(mock[2].track.stop).not.toHaveBeenCalled();
-  });
+    MDHelper.clearStream('aaaaa')
+    expect(MDHelper['streams'].length).toBe(2)
+    expect(streams[0].getTracks).toHaveBeenCalled()
+    expect(mock[0].track.stop).toHaveBeenCalled()
+    MDHelper.clearStream('11111')
+    expect(MDHelper['streams'].length).toBe(2)
+    expect(streams[1].getTracks).not.toHaveBeenCalled()
+    expect(streams[2].getTracks).not.toHaveBeenCalled()
+    expect(mock[1].track.stop).not.toHaveBeenCalled()
+    expect(mock[2].track.stop).not.toHaveBeenCalled()
+  })
 
   test('clearAllStream', () => {
-    MDHelper.clearAllStream();
-    expect(streams[1].getTracks).toHaveBeenCalled();
-    expect(streams[2].getTracks).toHaveBeenCalled();
-    expect(mock[1].track.stop).toHaveBeenCalled();
-    expect(mock[2].track.stop).toHaveBeenCalled();
-  });
+    MDHelper.clearAllStream()
+    expect(streams[1].getTracks).toHaveBeenCalled()
+    expect(streams[2].getTracks).toHaveBeenCalled()
+    expect(mock[1].track.stop).toHaveBeenCalled()
+    expect(mock[2].track.stop).toHaveBeenCalled()
+  })
 
   test('confirmPermission', async () => {
-    const track = createMockTrack();
+    const track = createMockTrack()
     const stream = createMockMediaStream({
       id: 'xxxxx',
       track,
-    });
+    })
     // @ts-ignore
     global.navigator = {
       mediaDevices: {
+        // @ts-ignore
         getUserMedia: jest.fn(() => stream),
       },
-    };
-    await MDHelper.confirmPermission();
-    expect(MDHelper['streams'].length).toBe(0);
-    expect(streams[1].getTracks).toHaveBeenCalled();
-  });
+    }
+    await MDHelper.confirmPermission()
+    expect(MDHelper['streams'].length).toBe(0)
+    expect(streams[1].getTracks).toHaveBeenCalled()
+  })
 
   test('getVideoDevices', async () => {
     const mock: { id: string; kind: MediaDeviceKind }[] = [
       { id: '11111', kind: 'audioinput' },
       { id: '22222', kind: 'audiooutput' },
       { id: '33333', kind: 'videoinput' },
-    ];
-    const info = mock.map((m) => createMockMediaDeviceInfo(m));
+    ]
+    const info = mock.map((m) => createMockMediaDeviceInfo(m))
     // @ts-ignore
     global.navigator = {
       mediaDevices: {
+        // @ts-ignore
         enumerateDevices: jest.fn(() => info),
       },
-    };
-    const devices = await MDHelper.getVideoDevices();
-    expect(devices.length).toBe(1);
-  });
+    }
+    const devices = await MDHelper.getVideoDevices()
+    expect(devices.length).toBe(1)
+  })
 
   test('getVideoStream', async () => {
-    const track = createMockTrack();
+    const track = createMockTrack()
     const mockStream = createMockMediaStream({
       id: 'ididid',
       track,
-    });
+    })
     // @ts-ignore
     global.navigator = {
       mediaDevices: {
+        // @ts-ignore
         getUserMedia: jest.fn(() => mockStream),
       },
-    };
-    const stream = await MDHelper.getVideoStream('ididid');
-    expect(stream.id).toBe('ididid');
-    expect(MDHelper['streams'][0].id).toBe('ididid');
-  });
+    }
+    const stream = await MDHelper.getVideoStream('ididid')
+    expect(stream.id).toBe('ididid')
+    expect(MDHelper['streams'][0].id).toBe('ididid')
+  })
 
   test('clean', () => {
-    const track = createMockTrack();
+    const track = createMockTrack()
     const mockStream = createMockMediaStream({
       id: 'ididid',
       track,
-    });
-    MediaDeviceHelper.clean(mockStream);
-    expect(mockStream.getTracks).toHaveBeenCalled();
-    expect(track.stop).toHaveBeenCalled();
-  });
-});
+    })
+    MediaDeviceHelper.clean(mockStream)
+    expect(mockStream.getTracks).toHaveBeenCalled()
+    expect(track.stop).toHaveBeenCalled()
+  })
+})

@@ -38,40 +38,39 @@
 //     ctx.drawImage(original.value, x, y, width, height, 0, 0, cw, ch)
 //   }
 
-
-
 // if (detection === undefined || detection.score < 0.8) {
-  //   // TODO: しっかり認識されていない場合の処理
-  //   return
-  // }
+//   // TODO: しっかり認識されていない場合の処理
+//   return
+// }
 
-  // const { width, height } = detection.box
-  // const { width: vw, height: vh } = canvas.value
+// const { width, height } = detection.box
+// const { width: vw, height: vh } = canvas.value
 
-  // if (vw / 2 > width && vh / 2 > height) {
-  //   // TODO: 画像が小さい場合の処理
-  //   return
-  // }
+// if (vw / 2 > width && vh / 2 > height) {
+//   // TODO: 画像が小さい場合の処理
+//   return
+// }
 
-  // const shrunk = document.createElement('canvas')
-  // const ctx = shrunk.getContext('2d')
+// const shrunk = document.createElement('canvas')
+// const ctx = shrunk.getContext('2d')
 
-  // if (!ctx) {
-  //   // TODO: canvas が作成できない場合の処理
-  //   return
-  // }
+// if (!ctx) {
+//   // TODO: canvas が作成できない場合の処理
+//   return
+// }
 
-  // shrinkImage(canvas, shrunk)
+// shrinkImage(canvas, shrunk)
 
-  // if (type === 'base64') {
-  //   emit("submit", shrunk.toDataURL(SCAN_CANVAS_MIME, CANVAS_QUOLITY))
-  // } else {
-  //   shrunk.toBlob(
-  //     (blob) =>
-  //       blob
-  //         ? emit("submit", blob)
-  //         : emit("error"),
-  //     SCAN_CANVAS_MIME,
-  //     CANVAS_QUOLITY
-  //   )
-  // }
+// if (type === 'base64') {
+//   emit("submit", shrunk.toDataURL(SCAN_CANVAS_MIME, CANVAS_QUOLITY))
+// } else {
+//   shrunk.toBlob(
+//     (blob) =>
+//       blob
+//         ? emit("submit", blob)
+//         : emit("error"),
+//     SCAN_CANVAS_MIME,
+//     CANVAS_QUOLITY
+//   )
+// }
+export default {}
