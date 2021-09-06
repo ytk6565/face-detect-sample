@@ -19,12 +19,6 @@ const detectPoints = [
   ...[480, 170, -340],
 ]
 
-const cameraSize = {
-  width: 640,
-  height: 480,
-}
-const cameraCenter = [cameraSize.width / 2, cameraSize.height / 2]
-
 const rows = detectPoints.length / 3
 
 export class OPCV {
@@ -45,10 +39,11 @@ export class OPCV {
       detectPoints
     )
     this._cameraMatrix = window.cv.matFromArray(3, 3, window.cv.CV_64FC1, [
-      ...[cameraSize.width, 0, cameraCenter[0]],
-      ...[0, cameraSize.width, cameraCenter[1]],
-      ...[0, 0, 1],
+      ...[0, 0, 0],
+      ...[0, 0, 0],
+      ...[0, 0, 0],
     ])
+    this.updateCameraMatrix(window.innerWidth, window.innerHeight)
     this._imagePoints = window.cv.Mat.zeros(rows, 2, window.cv.CV_64FC1)
     this._distCoeffs = window.cv.Mat.zeros(4, 1, window.cv.CV_64FC1)
 
@@ -80,6 +75,23 @@ export class OPCV {
     this._pointX.delete()
     this._pointY.delete()
     this._pointZ.delete()
+  }
+
+  updateCameraMatrix(width: number, height: number) {
+    const cameraCenter = [width / 2, height / 2]
+
+    this._modelPoints = window.cv.matFromArray(
+      rows,
+      3,
+      window.cv.CV_64FC1,
+      detectPoints
+    )
+
+    this._cameraMatrix = window.cv.matFromArray(3, 3, window.cv.CV_64FC1, [
+      ...[width, 0, cameraCenter[0]],
+      ...[0, width, cameraCenter[1]],
+      ...[0, 0, 1],
+    ])
   }
 
   getProjectPoints({ rvec, tvec }: { rvec: OpenCV.Mat; tvec: OpenCV.Mat }) {

@@ -88,8 +88,8 @@ export const useRoot: UseRoot = (
       videoRef,
       canvasRef,
       videoSize: {
-        width: 640,
-        height: 480,
+        width: window.innerWidth,
+        height: window.innerHeight,
       },
     }
   )

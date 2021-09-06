@@ -1,14 +1,14 @@
 export class MediaDeviceHelper {
-  private streams: MediaStream[] = [];
+  private streams: MediaStream[] = []
 
   static isMediaStream(data: unknown): data is MediaStream {
-    return data instanceof MediaStream;
+    return data instanceof MediaStream
   }
 
   static clean(stream: MediaStream) {
     stream.getTracks().forEach((track) => {
-      track.stop();
-    });
+      track.stop()
+    })
   }
 
   async getVideoStream(deviceId: string) {
@@ -17,56 +17,54 @@ export class MediaDeviceHelper {
       video: {
         deviceId,
         width: {
-          ideal: 640,
+          ideal: window.innerWidth,
         },
         height: {
-          ideal: 480,
+          ideal: window.innerHeight,
         },
       },
-    });
-    this.addStream(stream);
-    return stream;
+    })
+    this.addStream(stream)
+    return stream
   }
 
   async getVideoDevices() {
-    const mediaDevices = await navigator.mediaDevices.enumerateDevices();
+    const mediaDevices = await navigator.mediaDevices.enumerateDevices()
     const videoDevices = mediaDevices.filter(
       (device) => device.kind === 'videoinput'
-    );
-    return videoDevices;
+    )
+    return videoDevices
   }
 
   async confirmPermission() {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: false,
       video: true,
-    });
-    this.addStream(stream);
-    this.clearStream(stream.id);
+    })
+    this.addStream(stream)
+    this.clearStream(stream.id)
   }
 
   addStream(stream: MediaStream) {
-    this.streams.push(stream);
+    this.streams.push(stream)
   }
 
   clearStream(streamId: string) {
-    const streamIdx = this.streams.findIndex(
-      (stream) => stream.id === streamId
-    );
+    const streamIdx = this.streams.findIndex((stream) => stream.id === streamId)
     if (streamIdx > -1) {
       this.streams[streamIdx].getTracks().forEach((track) => {
-        track.stop();
-      });
-      this.streams.splice(streamIdx, 1);
+        track.stop()
+      })
+      this.streams.splice(streamIdx, 1)
     }
   }
 
   clearAllStream() {
     this.streams.forEach((stream) => {
       stream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    });
-    this.streams = [];
+        track.stop()
+      })
+    })
+    this.streams = []
   }
 }
