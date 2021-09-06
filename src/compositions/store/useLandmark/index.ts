@@ -25,11 +25,11 @@ export type State = {
  * @param state
  * @returns void
  */
-type UpdatePoints = (
+type Update = (
   state: Ref<State>
 ) => (points: NonNullable<State['points']>) => void
 
-const updatePoints: UpdatePoints = (state) => (points) => {
+const update: Update = (state) => (points) => {
   state.value = {
     ...state.value,
     points,
@@ -41,7 +41,7 @@ const updatePoints: UpdatePoints = (state) => (points) => {
  */
 type UseLandmark = () => {
   state: Ref<State>
-  updatePoints: ReturnType<UpdatePoints>
+  update: ReturnType<Update>
 }
 
 export const useLandmark: UseLandmark = () => {
@@ -51,6 +51,6 @@ export const useLandmark: UseLandmark = () => {
 
   return {
     state,
-    updatePoints: updatePoints(state),
+    update: update(state),
   }
 }

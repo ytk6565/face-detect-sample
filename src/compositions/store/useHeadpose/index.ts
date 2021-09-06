@@ -1,9 +1,9 @@
 import { Ref, ref } from '@nuxtjs/composition-api'
 
 type Angles = {
-  pitch: number
-  yaw: number
-  roll: number
+  pitch: number // x
+  yaw: number   // y
+  roll: number  // z
 }
 
 type Points = {

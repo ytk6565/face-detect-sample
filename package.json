@@ -19,8 +19,10 @@
   },
   "dependencies": {
     "@nuxtjs/composition-api": "^0.27.0",
+    "@vueuse/core": "^6.2.0",
     "core-js": "^3.17.2",
     "face-api.js": "^0.22.2",
+    "fast-average-color": "^6.4.2",
     "kalmanjs": "^1.1.0",
     "nuxt": "^2.15.8"
   },

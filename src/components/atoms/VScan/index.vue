@@ -13,6 +13,17 @@
       :height="videoDomSize.height"
       :class="$style.canvas"
     />
+    <ul :class="$style.checklist">
+      <li :data-active="checklistState.contains">
+        顔が枠内に収まっているか
+      </li>
+      <li :data-active="checklistState.direction">
+        顔が正面を向いているか
+      </li>
+      <li :data-active="checklistState.brightness">
+        枠内に絞った画像の平均明度
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -55,5 +66,25 @@ export default defineComponent({
   height: 100%;
   object-fit: cover;
   transform: translate(-50%, -50%) scaleX(-1);
+}
+
+.checklist {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  & > li {
+    color: #fff;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    background-color: red;
+    padding: 0 10px;
+
+    &[data-active="true"] {
+      background-color: green;
+    }
+  }
 }
 </style>

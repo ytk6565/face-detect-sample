@@ -14,6 +14,10 @@ import {
 import { useHeadpose } from '~/compositions/store/useHeadpose'
 import { useHeadposeAngle } from '~/compositions/useHeadposeAngle'
 import { useHeadposeRoot } from '~/compositions/useHeadposeRoot'
+import {
+  useChecklist,
+  State as ChecklistState,
+} from '~/compositions/store/useChecklist'
 import { KalmanFilter } from '~/libs/KalmanFilter'
 
 type LandmarkName =
@@ -67,6 +71,7 @@ type UseRoot = (
   canvasAngleRef: Ref<HTMLCanvasElement | null>
 ) => {
   landmarkState: Ref<LandmarkState>
+  checklistState: Ref<ChecklistState>
   videoDomSize: ComputedRef<VideoDomSize>
 }
 export const useRoot: UseRoot = (
@@ -77,10 +82,11 @@ export const useRoot: UseRoot = (
   canvasAngleRef
 ) => {
   const { createStream } = useStream(videoRef)
-  const { state: landmarkState, updatePoints } = useLandmark()
-  const { state: headposeState, update } = useHeadpose()
+  const { state: landmarkState, update: updateLandmark } = useLandmark()
+  const { state: headposeState, update: updateHeadpose } = useHeadpose()
+  const { state: checklistState, update: updateChecklist } = useChecklist()
   useHeadposeAngle(watch, headposeState, canvasAngleRef)
-  useHeadposeRoot(watch, landmarkState, update)
+  useHeadposeRoot(watch, landmarkState, updateHeadpose)
 
   const { pointsRef, videoDomSize, renderCountRef, detect } = useFaceDetect(
     onMounted,
@@ -99,7 +105,7 @@ export const useRoot: UseRoot = (
   })
 
   watch([pointsRef, renderCountRef], () => {
-    updatePoints({
+    updateLandmark({
       nose: formatPoint('nose', pointsRef.value.nose),
       leftEye: formatPoint('leftEye', pointsRef.value.leftEye),
       rightEye: formatPoint('rightEye', pointsRef.value.rightEye),
@@ -113,8 +119,15 @@ export const useRoot: UseRoot = (
     })
   })
 
+  watch(headposeState, (newHeadposeState) => {
+    if (videoRef.value && newHeadposeState.eulerAngles) {
+      updateChecklist(videoRef.value, newHeadposeState.eulerAngles)
+    }
+  })
+
   return {
     landmarkState,
+    checklistState,
     videoDomSize,
   }
 }
