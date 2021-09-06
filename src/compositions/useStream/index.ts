@@ -42,6 +42,8 @@ const stopStream: StopStream = (videoRef) => () => {
 
 /**
  * composition 関数
+ *
+ * @param videoRef video 要素
  */
 type UseStream = (videoRef: VideoRef) => {
   createStream: ReturnType<CreateStream>
