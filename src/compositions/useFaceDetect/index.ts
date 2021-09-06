@@ -153,6 +153,7 @@ const detect: Detect =
       )
       .withFaceLandmarks(useTinyModel)
 
+    // TODO: 現在のステートをリセットする
     if (!detection) {
       return
     }

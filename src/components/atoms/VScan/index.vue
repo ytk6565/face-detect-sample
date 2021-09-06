@@ -13,13 +13,10 @@
       :height="videoDomSize.height"
       :class="$style.canvas"
     />
+    <div ref="flame" :class="$style.flame"></div>
     <ul :class="$style.checklist">
-      <li :data-active="checklistState.contains">
-        顔が枠内に収まっているか
-      </li>
-      <li :data-active="checklistState.direction">
-        顔が正面を向いているか
-      </li>
+      <li :data-active="checklistState.contains">顔が枠内に収まっているか</li>
+      <li :data-active="checklistState.direction">顔が正面を向いているか</li>
       <li :data-active="checklistState.brightness">
         枠内に絞った画像の平均明度
       </li>
@@ -36,6 +33,7 @@ export default defineComponent({
     const video = ref()
     const canvas = ref()
     const canvasAngle = ref()
+    const flame = ref()
 
     const play = () => video.value.play()
 
@@ -43,8 +41,9 @@ export default defineComponent({
       video,
       canvas,
       canvasAngle,
+      flame,
       play,
-      ...useRoot(watch, onMounted, video, canvas, canvasAngle),
+      ...useRoot(watch, onMounted, video, canvas, canvasAngle, flame),
     }
   },
 })
@@ -68,6 +67,15 @@ export default defineComponent({
   transform: translate(-50%, -50%) scaleX(-1);
 }
 
+.flame {
+  position: absolute;
+  top: 30%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  border: 2px solid blue;
+}
+
 .checklist {
   position: absolute;
   top: 0;
@@ -77,12 +85,12 @@ export default defineComponent({
   & > li {
     color: #fff;
     font-weight: bold;
-    height: 30px;
-    line-height: 30px;
+    height: 5vh;
+    line-height: 5vh;
     background-color: red;
     padding: 0 10px;
 
-    &[data-active="true"] {
+    &[data-active='true'] {
       background-color: green;
     }
   }

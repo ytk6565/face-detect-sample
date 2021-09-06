@@ -59,16 +59,20 @@ function formatPoint(
 /**
  * composition 関数
  *
+ * @param watch watch 関数
+ * @param onMounted onMounted 関数
  * @param videoRef video 要素
  * @param canvasRef canvas 要素
  * @param canvasAngleRef canvas 要素
+ * @param frameRef フレーム要素
  */
 type UseRoot = (
   watch: typeof Watch,
   onMounted: typeof OnMounted,
   videoRef: Ref<HTMLVideoElement | null>,
   canvasRef: Ref<HTMLCanvasElement | null>,
-  canvasAngleRef: Ref<HTMLCanvasElement | null>
+  canvasAngleRef: Ref<HTMLCanvasElement | null>,
+  flameRef: Ref<HTMLDivElement | null>
 ) => {
   landmarkState: Ref<LandmarkState>
   checklistState: Ref<ChecklistState>
@@ -79,7 +83,8 @@ export const useRoot: UseRoot = (
   onMounted,
   videoRef,
   canvasRef,
-  canvasAngleRef
+  canvasAngleRef,
+  flameRef
 ) => {
   const { createStream } = useStream(videoRef)
   const { state: landmarkState, update: updateLandmark } = useLandmark()
@@ -120,8 +125,18 @@ export const useRoot: UseRoot = (
   })
 
   watch(headposeState, (newHeadposeState) => {
-    if (videoRef.value && newHeadposeState.eulerAngles) {
-      updateChecklist(videoRef.value, newHeadposeState.eulerAngles)
+    if (
+      videoRef.value &&
+      newHeadposeState.eulerAngles &&
+      landmarkState.value.points &&
+      flameRef.value
+    ) {
+      updateChecklist(
+        videoRef.value,
+        newHeadposeState.eulerAngles,
+        landmarkState.value.points,
+        flameRef.value.getBoundingClientRect()
+      )
     }
   })
 

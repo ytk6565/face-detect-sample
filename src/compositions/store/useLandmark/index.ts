@@ -31,7 +31,6 @@ type Update = (
 
 const update: Update = (state) => (points) => {
   state.value = {
-    ...state.value,
     points,
   }
 }
