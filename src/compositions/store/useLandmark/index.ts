@@ -17,7 +17,6 @@ export type Points = {
 
 export type State = {
   points: Points
-  renderThrottle: number
 }
 
 /**
@@ -38,41 +37,20 @@ const updatePoints: UpdatePoints = (state) => (points) => {
 }
 
 /**
- * RenderThrottle を更新する
- *
- * @param state
- * @returns void
- */
-type UpdateRenderThrottle = (
-  state: Ref<State>
-) => (renderThrottle: NonNullable<State['renderThrottle']>) => void
-
-const updateRenderThrottle: UpdateRenderThrottle =
-  (state) => (renderThrottle) => {
-    state.value = {
-      ...state.value,
-      renderThrottle,
-    }
-  }
-
-/**
  * composition 関数
  */
 type UseLandmark = () => {
   state: Ref<State>
   updatePoints: ReturnType<UpdatePoints>
-  updateRenderThrottle: ReturnType<UpdateRenderThrottle>
 }
 
 export const useLandmark: UseLandmark = () => {
   const state = ref({
     points: {},
-    renderThrottle: 0,
   })
 
   return {
     state,
     updatePoints: updatePoints(state),
-    updateRenderThrottle: updateRenderThrottle(state),
   }
 }
