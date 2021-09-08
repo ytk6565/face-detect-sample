@@ -2,8 +2,8 @@ import { Ref, ref } from '@nuxtjs/composition-api'
 
 type Angles = {
   pitch: number // x
-  yaw: number   // y
-  roll: number  // z
+  yaw: number // y
+  roll: number // z
 }
 
 type Points = {
@@ -30,8 +30,8 @@ export type State = {
 export type Update = (
   state: Ref<State>
 ) => (
-  eulerAngles: NonNullable<State['eulerAngles']>,
-  projectPoints: NonNullable<State['projectPoints']>
+  eulerAngles: State['eulerAngles'],
+  projectPoints: State['projectPoints']
 ) => void
 
 const update: Update = (state) => (eulerAngles, projectPoints) => {

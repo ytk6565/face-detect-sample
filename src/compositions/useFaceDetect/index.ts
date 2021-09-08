@@ -153,8 +153,21 @@ const detect: Detect =
       )
       .withFaceLandmarks(useTinyModel)
 
-    // TODO: 現在のステートをリセットする
     if (!detection) {
+      // TODO: 更新処理をまとめる
+      canvas.getContext('2d')?.clearRect(0, 0, canvas.width, canvas.height)
+      pointsRef.value = {
+        nose: undefined,
+        leftEye: undefined,
+        rightEye: undefined,
+        jaw: undefined,
+        leftMouth: undefined,
+        rightMouth: undefined,
+        upperLip: undefined,
+        lowerLip: undefined,
+        leftOutline: undefined,
+        rightOutline: undefined,
+      }
       return
     }
 

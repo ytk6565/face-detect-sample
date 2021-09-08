@@ -125,12 +125,7 @@ export const useRoot: UseRoot = (
   })
 
   watch(headposeState, (newHeadposeState) => {
-    if (
-      videoRef.value &&
-      newHeadposeState.eulerAngles &&
-      landmarkState.value.points &&
-      flameRef.value
-    ) {
+    if (videoRef.value && flameRef.value) {
       updateChecklist(
         videoRef.value,
         newHeadposeState.eulerAngles,

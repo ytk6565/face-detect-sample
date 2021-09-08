@@ -15,6 +15,12 @@ export type State = {
   brightness: boolean
 }
 
+/**
+ * ポイントであるか
+ *
+ * @param value
+ * @returns boolean
+ */
 const isPoint = (value: unknown): value is [number, number][] =>
   !!value &&
   Array.isArray(value) &&
@@ -22,6 +28,29 @@ const isPoint = (value: unknown): value is [number, number][] =>
     (point) =>
       point && typeof point[0] === 'number' && typeof point[1] === 'number'
   )
+
+/**
+ * 明るさを判定する関数
+ *
+ * @param red
+ * @param green
+ * @param blue
+ * @returns brightness 0 ~ 1
+ */
+type GetBrightness = (red: number, green: number, blue: number) => number
+
+const BRIGHTNESS_WEIGHTS = [0.2126, 0.7152, 0.0722]
+const BRIGHTNESS_MAX = BRIGHTNESS_WEIGHTS.reduce((a, b) => a + b * 255, 0)
+
+const getBrightness: GetBrightness = (red, green, blue) => {
+  // 0 ~ 1
+  const brightness =
+    red * BRIGHTNESS_WEIGHTS[0] +
+    green * BRIGHTNESS_WEIGHTS[1] +
+    blue * BRIGHTNESS_WEIGHTS[2]
+
+  return brightness / BRIGHTNESS_MAX
+}
 
 /**
  * 顔が枠内に収まっているか
@@ -93,7 +122,9 @@ const validateBrightness: ValidateBrightness = (source, flame) => {
     flame.height
   )
 
-  return fac.getColor(canvas).isLight
+  const [red, green, blue] = fac.getColor(canvas).value
+
+  return getBrightness(red, green, blue) > 0.4
 }
 
 /**

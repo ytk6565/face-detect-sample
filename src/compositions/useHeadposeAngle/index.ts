@@ -15,16 +15,17 @@ type Draw = (canvasRef: CanvasRef) => (state: State) => void
 export const draw: Draw = (canvasRef) => (state) => {
   const canvas = canvasRef.value
   const points = state.projectPoints
-  if (!canvas || !points) {
-    return
-  }
+  const context = canvas?.getContext('2d')
 
-  const context = canvas.getContext('2d')
-  if (!context) {
+  if (!canvas || !context) {
     return
   }
 
   context.clearRect(0, 0, canvas.width, canvas.height)
+
+  if (!points) {
+    return
+  }
 
   context.beginPath()
   context.lineWidth = 2
@@ -63,6 +64,7 @@ type UseHeadposeAngle = (
   state: Ref<State>,
   canvasRef: CanvasRef
 ) => void
+
 export const useHeadposeAngle: UseHeadposeAngle = (watch, state, canvasRef) => {
   watch(state, (newState) => draw(canvasRef)(newState))
 }

@@ -26,9 +26,7 @@ const updateHeadpose: UpdateHeadpose = (update) => (state) => {
       state.points
     )
 
-    if (eulerAngles && projectPoints) {
-      update(eulerAngles, projectPoints)
-    }
+    update(eulerAngles, projectPoints)
   }
 }
 
