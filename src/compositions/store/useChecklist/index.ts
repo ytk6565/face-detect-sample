@@ -142,10 +142,13 @@ type Update = (
 ) => void
 
 const update: Update = (state) => (source, eulerAngles, points, flame) => {
+  const contains = validateContains(points, flame)
+  const direction = validateDirection(eulerAngles)
+
   state.value = {
-    contains: validateContains(points, flame),
-    direction: validateDirection(eulerAngles),
-    brightness: validateBrightness(source, flame),
+    contains,
+    direction,
+    brightness: contains && direction && validateBrightness(source, flame),
   }
 }
 
