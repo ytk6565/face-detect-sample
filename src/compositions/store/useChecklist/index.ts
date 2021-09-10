@@ -1,11 +1,11 @@
 import { Ref, ref } from '@nuxtjs/composition-api'
-import FastAverageColor, { IFastAverageColor } from 'fast-average-color'
+import FastAverageColor from 'fast-average-color'
 import { State as Landmark } from '~/compositions/store/useLandmark'
 import { State as Headpose } from '~/compositions/store/useHeadpose'
 
 const fac = new FastAverageColor()
 
-type Source = Parameters<IFastAverageColor['getColor']>[0]
+type Source = HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | null
 
 type Flame = { x: number; y: number; width: number; height: number }
 
