@@ -4,7 +4,6 @@ import {
   ComputedRef,
   Ref,
 } from '@nuxtjs/composition-api'
-import * as faceapi from 'face-api.js'
 import { useFaceDetect, VideoDomSize } from '~/compositions/useFaceDetect'
 import { useStream } from '~/compositions/useStream'
 import {
@@ -12,49 +11,13 @@ import {
   State as LandmarkState,
 } from '~/compositions/store/useLandmark'
 import { useHeadpose } from '~/compositions/store/useHeadpose'
-import { useHeadposeAngle } from '~/compositions/useHeadposeAngle'
 import { useHeadposeRoot } from '~/compositions/useHeadposeRoot'
 import {
   useChecklist,
   State as ChecklistState,
 } from '~/compositions/store/useChecklist'
-import { KalmanFilter } from '~/libs/KalmanFilter'
-
-type LandmarkName =
-  | 'nose'
-  | 'leftEye'
-  | 'rightEye'
-  | 'jaw'
-  | 'leftMouth'
-  | 'rightMouth'
-  | 'upperLip'
-  | 'lowerLip'
-  | 'leftOutline'
-  | 'rightOutline'
-
-const kfilter = {
-  nose: new KalmanFilter(),
-  leftEye: new KalmanFilter(),
-  rightEye: new KalmanFilter(),
-  jaw: new KalmanFilter(),
-  leftMouth: new KalmanFilter(),
-  rightMouth: new KalmanFilter(),
-  upperLip: new KalmanFilter(),
-  lowerLip: new KalmanFilter(),
-  leftOutline: new KalmanFilter(),
-  rightOutline: new KalmanFilter(),
-}
-
-function formatPoint(
-  name: LandmarkName,
-  point?: faceapi.Point
-): [number, number] | undefined {
-  if (!point || typeof point.x !== 'number' || typeof point.y !== 'number') {
-    return undefined
-  }
-  const [x, y] = kfilter[name].filter([point.x, point.y])
-  return [x, y]
-}
+import { draw } from '~/domain/Headpose/draw'
+import { formatPoint } from '~/domain/Landmark'
 
 /**
  * composition 関数
@@ -86,11 +49,14 @@ export const useRoot: UseRoot = (
   canvasAngleRef,
   flameRef
 ) => {
+  // TODO: 引数で受け取る
+  const debug = true
+
   const { createStream } = useStream(videoRef)
   const { state: landmarkState, update: updateLandmark } = useLandmark()
   const { state: headposeState, update: updateHeadpose } = useHeadpose()
   const { state: checklistState, update: updateChecklist } = useChecklist()
-  useHeadposeAngle(watch, headposeState, canvasAngleRef)
+
   useHeadposeRoot(watch, landmarkState, updateHeadpose)
 
   const { pointsRef, videoDomSize, renderCountRef, detect } = useFaceDetect(
@@ -108,6 +74,12 @@ export const useRoot: UseRoot = (
   onMounted(() => {
     createStream().then(() => detect(detect, 0))
   })
+
+  if (debug) {
+    watch(headposeState, (newState) =>
+      draw(canvasAngleRef.value, newState.projectPoints)
+    )
+  }
 
   watch([pointsRef, renderCountRef], () => {
     updateLandmark({

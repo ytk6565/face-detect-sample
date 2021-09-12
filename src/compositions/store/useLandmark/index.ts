@@ -1,19 +1,5 @@
 import { Ref, ref } from '@nuxtjs/composition-api'
-
-type Point = [number, number]
-
-export type Points = {
-  nose?: Point
-  leftEye?: Point
-  rightEye?: Point
-  leftMouth?: Point
-  rightMouth?: Point
-  upperLip?: Point
-  lowerLip?: Point
-  jaw?: Point
-  leftOutline?: Point
-  rightOutline?: Point
-}
+import { Points } from '~/domain/Landmark'
 
 export type State = {
   points: Points

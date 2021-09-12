@@ -7,6 +7,7 @@ import {
 } from '@nuxtjs/composition-api'
 import * as faceapi from 'face-api.js'
 import { MediaDeviceHelper } from '~/libs/media/MediaDevice'
+import { isNumber, loadNets, isModelLoaded } from '~/domain/FaceDetect'
 
 const RENDER_THROTTLE = 5
 
@@ -46,42 +47,6 @@ type Config = {
 }
 
 // const isLandscapeVideoStream = videoStreamSize.width >= videoStreamSize.height
-
-/**
- * 数値であるか
- *
- * @returns boolean
- */
-const isNum = (value: any): value is number => typeof value === 'number'
-
-/**
- * モデルを読み込む
- *
- * @returns Promise
- */
-type LoadNets = () => Promise<void>
-
-const loadNets: LoadNets = async () => {
-  try {
-    await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri('models/weights'),
-      faceapi.nets.faceLandmark68TinyNet.loadFromUri('models/weights'),
-    ])
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-/**
- * モデルを読み込んだか
- *
- * @returns boolean
- */
-type IsModelLoaded = () => boolean
-
-const isModelLoaded: IsModelLoaded = () =>
-  faceapi.nets.tinyFaceDetector.isLoaded &&
-  faceapi.nets.faceLandmark68TinyNet.isLoaded
 
 /**
  * 顔診断
@@ -133,8 +98,8 @@ const detect: Detect =
     const trackSettings = stream.getTracks()[0].getSettings()
     const { width, height } = trackSettings
 
-    const videoWidth = isNum(width) ? width : videoStreamSizeRef.value.width
-    const videoHeight = isNum(height) ? height : videoStreamSizeRef.value.height
+    const videoWidth = isNumber(width) ? width : videoStreamSizeRef.value.width
+    const videoHeight = isNumber(height) ? height : videoStreamSizeRef.value.height
     if (
       videoWidth !== videoStreamSizeRef.value.width ||
       videoHeight !== videoStreamSizeRef.value.height

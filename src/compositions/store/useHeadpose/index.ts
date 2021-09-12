@@ -1,24 +1,9 @@
 import { Ref, ref } from '@nuxtjs/composition-api'
-
-type Angles = {
-  pitch: number // x
-  yaw: number // y
-  roll: number // z
-}
-
-type Points = {
-  x: number
-  y: number
-}
+import { Angles, ProjectPoints } from '~/domain/Headpose'
 
 export type State = {
   eulerAngles?: Angles
-  projectPoints?: {
-    nose: Points
-    x: Points
-    y: Points
-    z: Points
-  }
+  projectPoints?: ProjectPoints
 }
 
 /**
