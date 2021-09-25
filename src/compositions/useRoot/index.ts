@@ -5,7 +5,7 @@ import {
   Ref,
 } from '@nuxtjs/composition-api'
 import { useFaceDetect, VideoDomSize } from '~/compositions/useFaceDetect'
-import { useStream } from '~/compositions/useStream'
+import { useVideo } from '~/compositions/useVideo'
 import {
   useLandmark,
   State as LandmarkState,
@@ -52,7 +52,7 @@ export const useRoot: UseRoot = (
   // TODO: 引数で受け取る
   const debug = true
 
-  const { createStream } = useStream(videoRef)
+  const { createStream } = useVideo(videoRef)
   const { state: landmarkState, update: updateLandmark } = useLandmark()
   const { state: headposeState, update: updateHeadpose } = useHeadpose()
   const { state: checklistState, update: updateChecklist } = useChecklist()
@@ -72,7 +72,9 @@ export const useRoot: UseRoot = (
   )
 
   onMounted(() => {
-    createStream().then(() => detect(detect, 0))
+    createStream({ width: window.innerWidth, height: window.innerHeight }).then(
+      () => detect(detect, 0)
+    )
   })
 
   if (debug) {

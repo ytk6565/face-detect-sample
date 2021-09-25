@@ -6,7 +6,7 @@ import {
   ref,
 } from '@nuxtjs/composition-api'
 import * as faceapi from 'face-api.js'
-import { MediaDeviceHelper } from '~/libs/media/MediaDevice'
+import { isMediaStream } from '@/domain/MediaStream'
 import { isNumber, loadNets, isModelLoaded } from '~/domain/FaceDetect'
 
 const RENDER_THROTTLE = 5
@@ -79,7 +79,7 @@ const detect: Detect =
       return console.log('video or canvas is null')
     }
 
-    if (!MediaDeviceHelper.isMediaStream(stream)) {
+    if (!isMediaStream(stream)) {
       return console.log('not exist video stream')
     }
 
@@ -99,7 +99,9 @@ const detect: Detect =
     const { width, height } = trackSettings
 
     const videoWidth = isNumber(width) ? width : videoStreamSizeRef.value.width
-    const videoHeight = isNumber(height) ? height : videoStreamSizeRef.value.height
+    const videoHeight = isNumber(height)
+      ? height
+      : videoStreamSizeRef.value.height
     if (
       videoWidth !== videoStreamSizeRef.value.width ||
       videoHeight !== videoStreamSizeRef.value.height
