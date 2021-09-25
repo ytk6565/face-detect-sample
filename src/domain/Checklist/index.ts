@@ -2,7 +2,7 @@ import FastAverageColor from 'fast-average-color'
 import { Angles } from '../Headpose'
 import { Points } from '../Landmark'
 
-const fac = new FastAverageColor()
+const fastAverageColor = new FastAverageColor()
 
 export type Source =
   | HTMLImageElement
@@ -52,7 +52,10 @@ export const getBrightness: GetBrightness = (red, green, blue) => {
 /**
  * 顔が枠内に収まっているか
  */
-export type ValidateContains = (points: Points | undefined, flame: Rect) => boolean
+export type ValidateContains = (
+  points: Points | undefined,
+  flame: Rect
+) => boolean
 
 export const validateContains: ValidateContains = (points, flame) => {
   const _points = points && Object.values(points)
@@ -102,12 +105,12 @@ export type ValidateBrightness = (
 ) => (source: Source, flame: Rect) => boolean
 
 const validateBrightnessFactory: (
-  getColor: typeof fac.getColor
-) => ValidateBrightness = (getColor) => (threshold) => (source, flame) => {
+  fac: typeof fastAverageColor
+) => ValidateBrightness = (fac) => (threshold) => (source, flame) => {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
 
-  if (source === null || !context || !flame) {
+  if (source === null || !canvas || !context || !flame) {
     return false
   }
 
@@ -125,11 +128,10 @@ const validateBrightnessFactory: (
     flame.height
   )
 
-  const [red, green, blue] = getColor(canvas).value
+  const [red, green, blue] = fac.getColor(canvas).value
 
   return getBrightness(red, green, blue) > threshold
 }
 
-export const validateBrightness: ValidateBrightness = validateBrightnessFactory(
-  fac.getColor
-)
+export const validateBrightness: ValidateBrightness =
+  validateBrightnessFactory(fastAverageColor)

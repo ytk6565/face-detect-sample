@@ -1,4 +1,4 @@
-import { Points } from '~/compositions/store/useLandmark'
+import { Points } from '~/domain/Landmark'
 
 const detectPoints = [
   // nose
