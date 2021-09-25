@@ -1,10 +1,14 @@
 import * as faceapi from 'face-api.js'
 import { KalmanFilter } from '~/libs/KalmanFilter'
 
+/**
+ * Landmark
+ */
 type Point = [number, number]
-
-export type Points = {
+type Points = {
   nose?: Point
+  leftEyeBrow?: Point
+  rightEyeBrow?: Point
   leftEye?: Point
   rightEye?: Point
   leftMouth?: Point
@@ -15,25 +19,22 @@ export type Points = {
   leftOutline?: Point
   rightOutline?: Point
 }
+type LandmarkName = keyof Points
+export type Landmark = {
+  points: Points
+}
 
-type LandmarkName =
-  | 'nose'
-  | 'leftEye'
-  | 'rightEye'
-  | 'jaw'
-  | 'leftMouth'
-  | 'rightMouth'
-  | 'upperLip'
-  | 'lowerLip'
-  | 'leftOutline'
-  | 'rightOutline'
-
+/**
+ * KalmanFilter
+ */
 type KFilter = {
   [k in LandmarkName]: KalmanFilter
 }
 
 const kFilter: KFilter = {
   nose: new KalmanFilter(),
+  leftEyeBrow: new KalmanFilter(),
+  rightEyeBrow: new KalmanFilter(),
   leftEye: new KalmanFilter(),
   rightEye: new KalmanFilter(),
   jaw: new KalmanFilter(),
@@ -45,6 +46,9 @@ const kFilter: KFilter = {
   rightOutline: new KalmanFilter(),
 }
 
+/**
+ * ポイントをフォーマットする
+ */
 type FormatPoint = (
   name: LandmarkName,
   point?: faceapi.Point

@@ -1,5 +1,8 @@
 import { Ref } from '@nuxtjs/composition-api'
-import useMediaStream, { AddStream, ClearAllStream } from '../useMediaStream'
+import useMediaStream, {
+  AddStream,
+  ClearAllStream,
+} from '@/compositions/useMediaStream'
 import {
   isMediaStream,
   clean,
@@ -8,37 +11,43 @@ import {
   confirmPermission,
 } from '@/domain/MediaStream'
 
-type VideoRef = Ref<HTMLVideoElement | null>
+type VideoRef = Ref<HTMLVideoElement | undefined>
 
 /**
- * stream を作成する関数
- *
- * @param videoRef video 要素
- * @returns Promise
+ * stream を更新する
  */
-type CreateStream = (
-  videoRef: VideoRef,
-  addStream: ReturnType<AddStream>
-) => (size?: { width: number; height: number }) => Promise<void>
+type UpdateStream = (stream: MediaStream) => void
+type UpdateStreamFactory = (videoRef: VideoRef) => UpdateStream
 
-const createStream: CreateStream = (videoRef, addStream) => async (size) => {
-  // アクセス権を確認するために仮のカメラを取得し、破棄する
-  const streamForConfirm = await confirmPermission()
-  clean(streamForConfirm)
-  // アクセス権が確認出来たとき、正式なカメラを取得する
-  const devices = await getVideoDevices()
-  const stream = await getVideoStream(devices[0].deviceId, size)
-  addStream(stream)
+const updateStreamFactory: UpdateStreamFactory = (videoRef) => (stream) => {
   if (videoRef.value && isMediaStream(stream)) {
     videoRef.value.srcObject = stream
   }
 }
 
 /**
- * stream を停止する関数
- *
- * @param videoRef video 要素
- * @returns void
+ * stream を作成する
+ */
+type CreateStream = (
+  updateStream: UpdateStream,
+  addStream: ReturnType<AddStream>
+) => () => Promise<void>
+
+const createStream: CreateStream =
+  (updateStream, addStream) => async () => {
+    // アクセス権を確認するために仮のカメラを取得し、破棄する
+    const streamForConfirm = await confirmPermission()
+    clean(streamForConfirm)
+    // アクセス権が確認出来たとき、正式なカメラを取得する
+    const devices = await getVideoDevices()
+    const deviceId = devices[0].deviceId
+    const stream = await getVideoStream(deviceId)
+    addStream(stream)
+    updateStream(stream)
+  }
+
+/**
+ * stream を停止する
  */
 type StopStream = (
   videoRef: VideoRef,
@@ -55,19 +64,20 @@ const stopStream: StopStream = (videoRef, clearAllStream) => () => {
 
 /**
  * composition 関数
- *
- * @param videoRef video 要素
  */
 type UseVideo = (videoRef: VideoRef) => {
   createStream: ReturnType<CreateStream>
   stopStream: ReturnType<StopStream>
 }
 
-export const useVideo: UseVideo = (videoRef) => {
+const useVideo: UseVideo = (videoRef) => {
   const { addStream, clearAllStream } = useMediaStream()
+  const updateStream = updateStreamFactory(videoRef)
 
   return {
-    createStream: createStream(videoRef, addStream),
+    createStream: createStream(updateStream, addStream),
     stopStream: stopStream(videoRef, clearAllStream),
   }
 }
+
+export default useVideo

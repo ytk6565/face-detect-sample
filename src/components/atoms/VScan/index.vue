@@ -1,49 +1,63 @@
 <template>
   <div :class="$style.root">
-    <video ref="video" :class="$style.video" @loadeddata="play" />
+    <video
+      ref="video"
+      :width="videoDomSize.width"
+      :height="videoDomSize.height"
+      :class="$style.video"
+      @loadeddata="play"
+    />
     <canvas
-      ref="canvas"
+      ref="landmarkCanvas"
       :width="videoDomSize.width"
       :height="videoDomSize.height"
       :class="$style.canvas"
     />
     <canvas
-      ref="canvasAngle"
+      ref="headPoseCanvas"
       :width="videoDomSize.width"
       :height="videoDomSize.height"
       :class="$style.canvas"
     />
     <div ref="flame" :class="$style.flame"></div>
     <ul :class="$style.checklist">
-      <li :data-active="checklistState.contains">顔が枠内に収まっているか</li>
-      <li :data-active="checklistState.direction">顔が正面を向いているか</li>
-      <li :data-active="checklistState.brightness">
-        枠内に絞った画像の平均明度
-      </li>
+      <li :data-active="checklist.contains">顔が枠内に収まっているか</li>
+      <li :data-active="checklist.direction">顔が正面を向いているか</li>
+      <li :data-active="checklist.brightness">枠内に絞った画像の平均明度</li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, watch, onMounted, ref } from '@nuxtjs/composition-api'
-import { useRoot } from '~/compositions/useRoot'
+import useFaceDetect from './compositions/useFaceDetect'
 
 export default defineComponent({
   setup() {
     const video = ref()
-    const canvas = ref()
-    const canvasAngle = ref()
     const flame = ref()
+    const landmarkCanvas = ref()
+    const headPoseCanvas = ref()
 
     const play = () => video.value.play()
 
     return {
       video,
-      canvas,
-      canvasAngle,
       flame,
+      landmarkCanvas,
+      headPoseCanvas,
       play,
-      ...useRoot(watch, onMounted, video, canvas, canvasAngle, flame),
+      ...useFaceDetect(
+        watch,
+        onMounted,
+        video,
+        flame,
+        landmarkCanvas,
+        headPoseCanvas,
+        {
+          debug: true,
+        }
+      ),
     }
   },
 })

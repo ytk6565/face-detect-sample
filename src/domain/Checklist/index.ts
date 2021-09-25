@@ -1,16 +1,19 @@
 import FastAverageColor from 'fast-average-color'
-import { Angles } from '../Headpose'
-import { Points } from '../Landmark'
+import { Landmark } from '@/domain/Landmark'
+import { HeadPose } from '@/domain/HeadPose'
+import { Rect } from '@/domain/Web'
 
 const fastAverageColor = new FastAverageColor()
 
-export type Source =
-  | HTMLImageElement
-  | HTMLVideoElement
-  | HTMLCanvasElement
-  | null
-
-export type Rect = { x: number; y: number; width: number; height: number }
+/**
+ * Checklist
+ */
+type Source = HTMLImageElement | HTMLVideoElement | HTMLCanvasElement | null
+export type Checklist = {
+  contains: boolean
+  direction: boolean
+  brightness: boolean
+}
 
 /**
  * ポイントであるか
@@ -53,21 +56,21 @@ export const getBrightness: GetBrightness = (red, green, blue) => {
  * 顔が枠内に収まっているか
  */
 export type ValidateContains = (
-  points: Points | undefined,
-  flame: Rect
+  points: Landmark['points'],
+  rect?: Rect
 ) => boolean
 
-export const validateContains: ValidateContains = (points, flame) => {
-  const _points = points && Object.values(points)
-  if (points === undefined || !isPoints(_points) || !flame) {
+export const validateContains: ValidateContains = (points, rect) => {
+  const pointsValues = points && Object.values(points)
+  if (!isPoints(pointsValues) || pointsValues.length < 1 || !rect) {
     return false
   }
 
-  const { width, height } = flame
+  const { width, height } = rect
 
-  return _points.every((point) => {
-    const x = point[0] - flame.x
-    const y = point[1] - flame.y
+  return pointsValues.every((point) => {
+    const x = point[0] - rect.x
+    const y = point[1] - rect.y
 
     return x > 0 && x < width && y > 0 && y < height
   })
@@ -78,7 +81,7 @@ export const validateContains: ValidateContains = (points, flame) => {
  */
 export type ValidateDirection = (
   range: number
-) => (eulerAngles: Angles | undefined) => boolean
+) => (eulerAngles?: HeadPose['eulerAngles']) => boolean
 
 export const validateDirection: ValidateDirection =
   (range) => (eulerAngles) => {
@@ -102,30 +105,30 @@ export const validateDirection: ValidateDirection =
  */
 export type ValidateBrightness = (
   threshold: number
-) => (source: Source, flame: Rect) => boolean
+) => (source?: Source, rect?: Rect) => boolean
 
 const validateBrightnessFactory: (
   fac: typeof fastAverageColor
-) => ValidateBrightness = (fac) => (threshold) => (source, flame) => {
+) => ValidateBrightness = (fac) => (threshold) => (source, rect) => {
   const canvas = document.createElement('canvas')
   const context = canvas.getContext('2d')
 
-  if (source === null || !canvas || !context || !flame) {
+  if (!source || !rect || !canvas || !context) {
     return false
   }
 
-  canvas.width = flame.width
-  canvas.height = flame.height
+  canvas.width = rect.width
+  canvas.height = rect.height
   context.drawImage(
     source,
-    flame.x,
-    flame.y,
-    flame.width,
-    flame.height,
+    rect.x,
+    rect.y,
+    rect.width,
+    rect.height,
     0,
     0,
-    flame.width,
-    flame.height
+    rect.width,
+    rect.height
   )
 
   const [red, green, blue] = fac.getColor(canvas).value

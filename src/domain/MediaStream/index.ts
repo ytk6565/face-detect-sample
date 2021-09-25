@@ -19,22 +19,13 @@ export const clean: Clean = (stream) => {
 /**
  * video の stream を取得する
  */
-type GetVideoStream = (
-  deviceId: string,
-  size?: { width: number; height: number }
-) => Promise<MediaStream>
+type GetVideoStream = (deviceId: string) => Promise<MediaStream>
 
-export const getVideoStream: GetVideoStream = async (deviceId, size) => {
+export const getVideoStream: GetVideoStream = async (deviceId) => {
   const stream = await navigator.mediaDevices.getUserMedia({
     audio: false,
     video: {
       deviceId,
-      width: {
-        ideal: size?.width || window.innerWidth,
-      },
-      height: {
-        ideal: size?.height || window.innerHeight,
-      },
     },
   })
   return stream

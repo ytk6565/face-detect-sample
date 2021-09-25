@@ -45,7 +45,15 @@ const nuxtConfig: NuxtConfig = {
   modules: [],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    extend(config) {
+      config?.module?.rules.push({
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+      })
+    },
+  },
 
   // Docs: https://nuxtjs.org/docs/2.x/configuration-glossary/configuration-server
   server: {

@@ -1,17 +1,18 @@
-import { ProjectPoints } from '../Headpose'
+import { HeadPose } from '.'
 
 /**
- * 顔の向きを表示する
+ * 顔の向きを描画する
  *
  * @param canvas canvas 要素
  */
-type Draw = (
-  canvas: HTMLCanvasElement | null,
-  projectPoints: ProjectPoints | undefined
+type DrawHeadPose = (
+  canvas: HTMLCanvasElement | undefined,
+  headPose: HeadPose | undefined
 ) => void
 
-export const draw: Draw = (canvas, projectPoints) => {
+export const drawHeadPose: DrawHeadPose = (canvas, headPose) => {
   const context = canvas?.getContext('2d')
+  const projectPoints = headPose?.projectPoints
 
   if (!canvas || !context) {
     return

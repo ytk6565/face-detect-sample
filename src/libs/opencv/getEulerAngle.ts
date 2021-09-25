@@ -1,4 +1,4 @@
-import { Points } from '~/domain/Landmark'
+import { Landmark } from '~/domain/Landmark'
 
 const detectPoints = [
   // nose
@@ -43,7 +43,6 @@ export class OPCV {
       ...[0, 0, 0],
       ...[0, 0, 0],
     ])
-    this.updateCameraMatrix(window.innerWidth, window.innerHeight)
     this._imagePoints = window.cv.Mat.zeros(rows, 2, window.cv.CV_64FC1)
     this._distCoeffs = window.cv.Mat.zeros(4, 1, window.cv.CV_64FC1)
 
@@ -156,7 +155,7 @@ export class OPCV {
     return points
   }
 
-  estimateEulerAngles(points: Points) {
+  estimateEulerAngles(points: Landmark['points']) {
     const calcValue: {
       eulerAngles?: {
         pitch: number

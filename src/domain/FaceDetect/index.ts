@@ -29,3 +29,22 @@ type IsModelLoaded = () => boolean
 export const isModelLoaded: IsModelLoaded = () =>
   faceapi.nets.tinyFaceDetector.isLoaded &&
   faceapi.nets.faceLandmark68TinyNet.isLoaded
+
+/**
+ * モデルを読み込んでいなければ読み込む
+ */
+type MightLoadNets = () => Promise<void>
+type MightLoadNetsFactory = (
+  loadNets: LoadNets,
+  isModelLoaded: IsModelLoaded
+) => MightLoadNets
+
+const mightLoadNetsFactory: MightLoadNetsFactory =
+  (loadNets, isModelLoaded) => async () => {
+    if (isModelLoaded()) {
+      return
+    }
+
+    await loadNets()
+  }
+export const mightLoadNets = mightLoadNetsFactory(loadNets, isModelLoaded)
