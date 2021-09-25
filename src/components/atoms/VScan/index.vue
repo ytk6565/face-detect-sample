@@ -47,17 +47,10 @@ export default defineComponent({
       landmarkCanvas,
       headPoseCanvas,
       play,
-      ...useFaceDetect(
-        watch,
-        onMounted,
-        video,
-        flame,
-        landmarkCanvas,
-        headPoseCanvas,
-        {
-          debug: true,
-        }
-      ),
+      ...useFaceDetect(watch, onMounted, video, flame, {
+        landmarkCanvasRef: landmarkCanvas,
+        headPoseCanvasRef: headPoseCanvas,
+      }),
     }
   },
 })
