@@ -7,7 +7,8 @@ import {
 } from '@nuxtjs/composition-api'
 import * as faceapi from 'face-api.js'
 import { isMediaStream } from '@/domain/MediaStream'
-import { isNumber, loadNets, isModelLoaded } from '~/domain/FaceDetect'
+import { isNumber } from '~/domain/Utils'
+import { loadNets, isModelLoaded } from '~/domain/FaceDetect'
 
 const RENDER_THROTTLE = 5
 

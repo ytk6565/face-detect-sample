@@ -1,13 +1,6 @@
 import * as faceapi from 'face-api.js'
 
 /**
- * 数値であるか
- *
- * @returns boolean
- */
-export const isNumber = (value: any): value is number => typeof value === 'number'
-
-/**
  * モデルを読み込む
  *
  * @returns Promise
