@@ -1,5 +1,5 @@
 import * as faceapi from 'face-api.js'
-import { KalmanFilter } from '~/libs/KalmanFilter'
+import { KalmanFilter } from '@/libs/KalmanFilter'
 
 /**
  * Landmark

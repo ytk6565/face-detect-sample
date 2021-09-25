@@ -1,4 +1,4 @@
-import { Landmark } from '~/domain/Landmark'
+import { Landmark } from '@/domain/Landmark'
 
 const detectPoints = [
   // nose

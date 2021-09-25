@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import VScan from '~/components/atoms/VScan/index.vue'
+import VScan from '@/components/atoms/VScan/index.vue'
 
 export default defineComponent({
   components: {
