@@ -24,7 +24,7 @@
     "face-api.js": "^0.22.2",
     "fast-average-color": "^6.4.2",
     "kalmanjs": "^1.1.0",
-    "nuxt": "^2.15.8"
+    "nuxt": "^3.4.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.15.4",
